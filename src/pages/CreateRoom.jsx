@@ -1,17 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
 const CreateRoom = () => {
+  // localStorage.removeItem('name');
+
+  const navigate = useNavigate();
+  // console.log(localStorage.getItem('name')+"z");
+  
+  useEffect(() => {
+    if (localStorage.getItem('name') === null) {
+      console.log(localStorage.getItem('name') + "z");
+      navigate('/');
+    }
+  }, [navigate]);
+
   const [roomId, setRoomId] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [numRounds, setNumRounds] = useState('');
   const [wordsPerRound, setWordsPerRound] = useState('');
   const [timer, setTimer] = useState('');
-  const navigate = useNavigate();
 
   const generateRoomId = () => {
-    const id = Math.random().toString(36).substring(2, 10);
+    const ID = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var id = ID.charAt(Math.random()*10);
+    id+=ID.charAt(Math.random()*10);
+    id+=ID.charAt(Math.random()*10);
+    id+=ID.charAt(Math.random()*10);
+    // this id is to be added in rooms.json in backend
+    // with host name
+    
     setRoomId(id);
     setIsCopied(false);
   };
@@ -31,6 +49,37 @@ const CreateRoom = () => {
     }
     // Add logic to create a room
     console.log(`Room Created with ID: ${roomId}`);
+    // roomId is roomId and playerName is localStorage.get('name')
+    const aa = roomId;
+    const bb = localStorage.getItem('name');
+
+    
+
+    fetch('http://localhost:8000/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        roomId: aa,
+        playerName: bb
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+    
+
+
     navigate(`/room/${roomId}`); // Navigate to the waiting room page
   };
 
