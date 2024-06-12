@@ -2,32 +2,47 @@
 
 .glow {
   font-family: 'Caveat', cursive;
-  font-size: 6rem; /* Default size for smaller screens */
+  font-size: 6rem; 
   font-weight: bold;
   color: #fff;
   text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
-  animation: glow 1.5s infinite alternate, color-change 3s infinite;
+  animation: glow 3s infinite alternate, color-change 9s infinite;
 }
 
 @keyframes glow {
-  from {
+  0% {
     text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
   }
-  to {
+  20% {
     text-shadow: 0 0 20px #fff, 0 0 30px #ff00ff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff, 0 0 80px #ff00ff;
+  }
+  40% {
+    text-shadow: 0 0 30px #fff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff, 0 0 80px #ff00ff, 0 0 90px #ff00ff;
+  }
+  60% {
+    text-shadow: 0 0 40px #fff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff, 0 0 80px #ff00ff, 0 0 90px #ff00ff, 0 0 100px #ff00ff;
+  }
+  80% {
+    text-shadow: 0 0 50px #fff, 0 0 60px #ff00ff, 0 0 70px #ff00ff, 0 0 80px #ff00ff, 0 0 90px #ff00ff, 0 0 100px #ff00ff, 0 0 110px #ff00ff;
+  }
+  100% {
+    text-shadow: 0 0 60px #fff, 0 0 70px #ff00ff, 0 0 80px #ff00ff, 0 0 90px #ff00ff, 0 0 100px #ff00ff, 0 0 110px #ff00ff, 0 0 120px #ff00ff;
   }
 }
 
 @keyframes color-change {
   0% { color: #ff51ff; }
-  25% { color: #5bff46; }
-  50% { color: #ffff00; }
-  75% { color: #6b46ff; }
-  100% { color: #00ffff; }
+  15% { color: #5bff46; }
+  30% { color: #ffff00; }
+  45% { color: #6b46ff; }
+  60% { color: #00ffff; }
+  75% { color: #ff0000; }
+  90% { color: #00ff00; }
+  100% { color: #ff51ff; }
 }
 
-@media (min-width: 768px) {
+@media (max-width: 767px) {
   .glow {
-    font-size: 9rem; /* Larger size for medium and larger screens */
+    font-size: 4rem;
   }
 }
