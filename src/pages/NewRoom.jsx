@@ -9,7 +9,17 @@ const NewRoom = () => {
   const [players, setPlayers] = useState([]);
   const [isHost, setIsHost] = useState(true); // Set to true if the user is the host
   const [dataArray, setDataArray] = useState([]); 
-  const [hasName, setName] = useState(false);
+  const [hasName, sethasName] = useState(false);
+
+  const [name, setName] = useState('');
+
+   
+  useEffect(() => {
+    const nameFromStorage = localStorage.getItem('name');
+    if (nameFromStorage) {
+      sethasName(true); // Set hasName to true if 'name' exists
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPlayers = () => {
@@ -57,7 +67,7 @@ const NewRoom = () => {
   }, [roomId]);
 
   return (
-    <div className='bg-cover bg-center min-h-screen flex flex-col justify-center items-center overflow-hidden' style={{ backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/021/736/713/large_2x/doodle-lines-arrows-circles-and-curves-hand-drawn-design-elements-isolated-on-white-background-for-infographic-illustration-vector.jpg')" }}>
+      <div className='bg-cover bg-center min-h-screen flex flex-col justify-center items-center overflow-hidden' style={{ backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/021/736/713/large_2x/doodle-lines-arrows-circles-and-curves-hand-drawn-design-elements-isolated-on-white-background-for-infographic-illustration-vector.jpg')" }}>
       <h1 className='glow mb-10 md:text-[6rem] xs:text-[4rem]'>Waiting Room</h1>
       <div className='bg-white bg-opacity-90 p-8 rounded-lg shadow-lg flex flex-col justify-center items-center w-4/5 max-w-md border border-black'>
         <h2 className='text-2xl font-bold mb-4'>Players in the Room:</h2>
@@ -75,9 +85,58 @@ const NewRoom = () => {
             Start Game
           </button>
         )}
-        <h1>{roomId}</h1>
+        
+        
+      { hasName ? (<p></p>) : (
+        <><input className='mt-3 border border-gray-300 p-2 mb-2 w-full rounded' type="text" 
+        placeholder="Enter your username"
+        onChange={(e) => setName(e.target.value)
+        }
+         />
+         <button 
+            className=' bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded ml-2 w-full' 
+            onClick={() => {
+
+              if(name.length!=0) localStorage.setItem('name',name); 
+              console.log(localStorage.getItem('name'));
+              if(localStorage.getItem('name').length>0) {
+                fetch('https://pictionary-back.onrender.com/add', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    roomId: roomId,
+                    playerName: name
+                  })
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  console.log(data);
+                })
+                .catch(error => {
+                  console.error('There was a problem with the fetch operation:', error);
+                });
+                
+                setName(localStorage.getItem('name')); sethasName(true);
+              }
+              else
+              alert("Put a name buddy");
+               }}> 
+               Save name
+          </button>
+        </>
+        )
+         }
       </div>
     </div>
+    
+
   );
 }
 
