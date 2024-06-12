@@ -20,7 +20,7 @@ const Avatar = () => {
       ) : (
         <p>Loading...</p>
       )}
-      <button onClick={fetchRandomAvatar} className="bg-purple-500 hover:bg-purple-700 text-white px-4 py-2 rounded mb-4">
+      <button onClick={fetchRandomAvatar} className="bg-purple-500 hover:bg-purple-700 text-white px-4 py-2 rounded-full  mb-4">
         Change Avatar
       </button>
     </div>

@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
 const CreateRoom = () => {
   const [roomId, setRoomId] = useState('');
   const [isCopied, setIsCopied] = useState(false);
+  const [numRounds, setNumRounds] = useState('');
+  const [wordsPerRound, setWordsPerRound] = useState('');
+  const [timer, setTimer] = useState('');
+  const navigate = useNavigate();
 
   const generateRoomId = () => {
     const id = Math.random().toString(36).substring(2, 10);
@@ -16,6 +21,17 @@ const CreateRoom = () => {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     });
+  };
+
+  const createRoom = () => {
+    // Check if Room ID, number of rounds, words per round, and timer are filled
+    if (!roomId || !numRounds || !wordsPerRound || !timer) {
+      alert('Please generate a Room ID and fill in all fields.');
+      return;
+    }
+    // Add logic to create a room
+    console.log(`Room Created with ID: ${roomId}`);
+    navigate(`/room/${roomId}`); // Navigate to the waiting room page
   };
 
   return (
@@ -43,17 +59,40 @@ const CreateRoom = () => {
         </div>
         <div className='mb-4 w-full'>
           <label className='block mb-2'>Number of Rounds</label>
-          <input className='border border-gray-300 p-2 w-full rounded' type="number" placeholder="Enter number of rounds" />
+          <input 
+            className='border border-gray-300 p-2 w-full rounded' 
+            type="number" 
+            placeholder="Enter number of rounds" 
+            value={numRounds} 
+            onChange={(e) => setNumRounds(e.target.value)} 
+          />
         </div>
         <div className='mb-4 w-full'>
           <label className='block mb-2'>Words per Round</label>
-          <input className='border border-gray-300 p-2 w-full rounded' type="number" placeholder="Enter words per round" />
+          <input 
+            className='border border-gray-300 p-2 w-full rounded' 
+            type="number" 
+            placeholder="Enter words per round" 
+            value={wordsPerRound} 
+            onChange={(e) => setWordsPerRound(e.target.value)} 
+          />
         </div>
         <div className='mb-4 w-full'>
           <label className='block mb-2'>Timer (seconds)</label>
-          <input className='border border-gray-300 p-2 w-full rounded' type="number" placeholder="Enter timer in seconds" />
+          <input 
+            className='border border-gray-300 p-2 w-full rounded' 
+            type="number" 
+            placeholder="Enter timer in seconds" 
+            value={timer} 
+            onChange={(e) => setTimer(e.target.value)} 
+          />
         </div>
-        <button className='bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded w-full'>Create Room</button>
+        <button 
+          onClick={createRoom} 
+          className='bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded w-full'
+        >
+          Create Room
+        </button>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import CreateRoom from './pages/CreateRoom';
 import { Routes, Route } from 'react-router-dom';
 import EnterRoom from './pages/EnterRoom';
+import NewRoom from './pages/NewRoom';
 
 
 function App() {
@@ -14,7 +15,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/create" element={<CreateRoom />} />
-        <Route path="/join" element={<EnterRoom />} /> 
+        <Route path="/join" element={<EnterRoom />} />
+        <Route path="/room/:roomId" element={<NewRoom />} /> 
       </Routes>
       
     </div>
