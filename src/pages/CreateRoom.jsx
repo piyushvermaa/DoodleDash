@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
 const CreateRoom = () => {
-  localStorage.removeItem('name');
+  // localStorage.removeItem('name');
 
   const navigate = useNavigate();
   // console.log(localStorage.getItem('name')+"z");

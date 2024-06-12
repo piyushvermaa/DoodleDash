@@ -7,7 +7,7 @@ import '../App.css';
 const NewRoom = () => {
   const { roomId } = useParams();
   const [players, setPlayers] = useState([]);
-  const [isHost, setIsHost] = useState(true); // Set to true if the user is the host
+  const [isHost, setIsHost] = useState(false); // Set to true if the user is the host
   const [dataArray, setDataArray] = useState([]); 
   const [hasName, sethasName] = useState(false);
 
@@ -18,6 +18,36 @@ const NewRoom = () => {
     const nameFromStorage = localStorage.getItem('name');
     if (nameFromStorage) {
       sethasName(true); // Set hasName to true if 'name' exists
+      // check if host
+
+        const fetchData = () => {
+          fetch('https://pictionary-back.onrender.com/getHost', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              roomId: roomId,
+              playerName: "bb"
+            })
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            if(data === nameFromStorage) setIsHost(true);
+          })
+          .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+          });
+        };
+    
+        fetchData();
+      
+
     }
   }, []);
 
@@ -85,6 +115,12 @@ const NewRoom = () => {
             Start Game
           </button>
         )}
+        {!isHost && (
+          <button className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300' disabled>
+            Start Game
+          </button>
+        )}
+        
         
         
       { hasName ? (<p></p>) : (
