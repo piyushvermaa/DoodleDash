@@ -9,6 +9,7 @@ const NewRoom = () => {
   const [players, setPlayers] = useState([]);
   const [isHost, setIsHost] = useState(true); // Set to true if the user is the host
   const [dataArray, setDataArray] = useState([]); 
+  const [hasName, setName] = useState(false);
 
   useEffect(() => {
     const fetchPlayers = () => {
@@ -24,7 +25,7 @@ const NewRoom = () => {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch('http://localhost:8000/getNames', {
+      fetch('https://pictionary-back.onrender.com/getNames', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

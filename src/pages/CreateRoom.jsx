@@ -55,7 +55,7 @@ const CreateRoom = () => {
 
     
 
-    fetch('http://localhost:8000/add', {
+    fetch('https://pictionary-back.onrender.com/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
