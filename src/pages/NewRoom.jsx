@@ -110,13 +110,10 @@ const NewRoom = () => {
         </div>
         {isHost && (
           <button onClick={()=>{
-            console.log("started")
+            /// a request goes to backend 
+            /// everyone is switched to game page ?
+
           }} className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300'>
-            Start Game
-          </button>
-        )}
-        {!isHost && (
-          <button className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300' disabled>
             Start Game
           </button>
         )}
