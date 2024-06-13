@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import GamePage from './GamePage';
 import '../App.css';
 /// pehle localStorage me tumhara naam check hoyega, 
 /// if exists then auto join nahi to naam dede
@@ -12,7 +13,48 @@ const NewRoom = () => {
   const [hasName, sethasName] = useState(false);
   // const [added, setAdded] = useState(false);
   const [name, setName] = useState('');
+  const [status, setStatus] = useState(false);
 
+
+  
+
+  const navigate = useNavigate();
+  
+  const nameFromStorage = localStorage.getItem('name');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch('https://pictionary-back.onrender.com/getStatus', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          roomId: roomId,
+          playerName: nameFromStorage
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      
+        .then(data => {
+          if (data.start === true) {
+            
+            setStatus(true);
+          }else console.log("wait");
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }, 2000); // Ping every 5 seconds
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(interval);
+  }, [navigate]);
    
   useEffect(() => {
     const nameFromStorage = localStorage.getItem('name');
@@ -150,6 +192,7 @@ const NewRoom = () => {
     return () => clearInterval(interval); // Clean up the interval on component unmount
   }, [roomId]);
 
+  if(!status)
   return (
       <div className='bg-cover bg-center min-h-screen flex flex-col justify-center items-center overflow-hidden' style={{ backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/021/736/713/large_2x/doodle-lines-arrows-circles-and-curves-hand-drawn-design-elements-isolated-on-white-background-for-infographic-illustration-vector.jpg')" }}>
       <h1 className='glow mb-10 md:text-[6rem] xs:text-[4rem]'>Waiting Room</h1>
@@ -250,6 +293,7 @@ const NewRoom = () => {
     
 
   );
+  return <><GamePage/></>
 }
 
 export default NewRoom;
