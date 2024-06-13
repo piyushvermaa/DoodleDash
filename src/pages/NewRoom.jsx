@@ -10,14 +10,67 @@ const NewRoom = () => {
   const [isHost, setIsHost] = useState(false); // Set to true if the user is the host
   const [dataArray, setDataArray] = useState([]); 
   const [hasName, sethasName] = useState(false);
-
+  // const [added, setAdded] = useState(false);
   const [name, setName] = useState('');
 
    
   useEffect(() => {
     const nameFromStorage = localStorage.getItem('name');
+    // jaise hi banda aaye check karo wo pehle se hai to nahi
+
+    // /exists pe async call
+    
     if (nameFromStorage) {
-      sethasName(true); // Set hasName to true if 'name' exists
+      sethasName(true);
+      // before this fetch req, break if /exists returns true
+
+      
+      fetch('https://pictionary-back.onrender.com/exists', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          roomId: roomId,
+          playerName: nameFromStorage
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Exists check:', data);
+        if (data.exists === false) {
+          // If the player does not exist, make the second fetch request to add the player
+           fetch('https://pictionary-back.onrender.com/add', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              roomId: roomId,
+              playerName: nameFromStorage
+            })
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Add player:', data);
+          });
+        }
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+      
+      // sethasName(true); // Set hasName to true if 'name' exists
       // check if host
 
         const fetchData = () => {
@@ -39,6 +92,7 @@ const NewRoom = () => {
           })
           .then(data => {
             if(data === nameFromStorage) setIsHost(true);
+            console.log(data);
           })
           .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -112,6 +166,31 @@ const NewRoom = () => {
           <button onClick={()=>{
             /// a request goes to backend 
             /// everyone is switched to game page ?
+
+
+            fetch('https://pictionary-back.onrender.com/addStart', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                roomId: roomId,
+                playerName: name
+              })
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then(data => {
+              console.log("Wait for game to be started .... ");
+            })
+            .catch(error => {
+              console.error('There was a problem with the fetch operation:', error);
+            });
+            
 
           }} className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full transition duration-300'>
             Start Game
