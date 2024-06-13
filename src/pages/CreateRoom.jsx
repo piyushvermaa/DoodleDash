@@ -55,28 +55,28 @@ const CreateRoom = () => {
 
     
 
-    fetch('https://pictionary-back.onrender.com/add', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        roomId: aa,
-        playerName: bb
-      })
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
+    // fetch('https://pictionary-back.onrender.com/add', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     roomId: aa,
+    //     playerName: bb
+    //   })
+    // })
+    // .then(response => {
+    //   if (!response.ok) {
+    //     throw new Error('Network response was not ok');
+    //   }
+    //   return response.json();
+    // })
+    // .then(data => {
+    //   console.log(data);
+    // })
+    // .catch(error => {
+    //   console.error('There was a problem with the fetch operation:', error);
+    // });
     
 
 

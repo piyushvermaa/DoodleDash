@@ -21,6 +21,34 @@ const NewRoom = () => {
   const navigate = useNavigate();
   
   const nameFromStorage = localStorage.getItem('name');
+  const fetchData = () => {
+    fetch('https://pictionary-back.onrender.com/getHost', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        roomId: roomId,
+        playerName: "bb"
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if(data === nameFromStorage) setIsHost(true);
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  };
+
+  fetchData();
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -115,34 +143,7 @@ const NewRoom = () => {
       // sethasName(true); // Set hasName to true if 'name' exists
       // check if host
 
-        const fetchData = () => {
-          fetch('https://pictionary-back.onrender.com/getHost', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              roomId: roomId,
-              playerName: "bb"
-            })
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => {
-            if(data === nameFromStorage) setIsHost(true);
-            console.log(data);
-          })
-          .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-          });
-        };
-    
-        fetchData();
-      
+        
 
     }
   }, []);
