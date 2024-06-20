@@ -1,4 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { flushSync } from 'react-dom';
+
 
 const GamePage = ({ stateArray }) => {
   const canvasRef = useRef(null);
@@ -19,6 +21,7 @@ const GamePage = ({ stateArray }) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
+    
     setCtx(context);
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
@@ -26,29 +29,26 @@ const GamePage = ({ stateArray }) => {
     context.fillRect(0, 0, canvas.width, canvas.height);
     const url = window.location.href;
     const code = url.slice(-4); 
-    const ws = new WebSocket(`wss://pictionary-back.onrender.com?code=${code}`);
+    const ws = new WebSocket(`ws://localhost:8000?code=${code}`);
     setSocket(ws);
 
-
-    // Handle incoming WebSocket messages
     ws.onmessage = (event) => {
+      
       const data = JSON.parse(event.data);
-      
-      console.log("AANE WALA");
-      console.log(data.startX+" "+data.startY+" ");
-      console.log(data.endX+" "+data.endY+" ");
+      // console.log(event.data);
+      if(ctx)
       handleIncomingDrawing(data);
-
-
-      
-      console.log("AAYA");
+      else console.log(new Date().getSeconds());
     };
+
+    
 
     return () => {
-      ws.close();
+      ws.close();// Clear interval on component unmount
     };
-  }, []);
+  }, [ctx]);
 
+  
   const startDrawing = (event) => {
     event.preventDefault();
     const mouseX = getX(event);
@@ -83,14 +83,7 @@ const GamePage = ({ stateArray }) => {
     ctx.lineTo(mouseX, mouseY);
     ctx.stroke();
     if (socket && socket.readyState === WebSocket.OPEN) {
-      const drawingData = {
-        tool,
-        color,
-        startX: PX==null?mouseX-1:PX,
-        startY: PY==null?mouseY-1:PY,
-        endX: mouseX,
-        endY: mouseY,
-      };
+      
       // socket.send(JSON.stringify(drawingData));
       const imageData = canvasRef.current.toDataURL(); // Get canvas data as base64 string
       socket.send(JSON.stringify({ imageData }));
@@ -163,15 +156,21 @@ const GamePage = ({ stateArray }) => {
   };
 
   const handleIncomingDrawing = (data) => {
-    if (ctx) {
+    
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    // console.log(context);
+    setCtx(context);
+    if(!ctx) {
+      alert("ruk");
+    }else{
       const image = new Image();
       image.onload = () => {
         ctx.drawImage(image, 0, 0);
       };
       image.src = data.imageData;
     }
-  };
-
+  }
   const saveState = () => {
     setUndoStack([...undoStack, ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height)]);
   };
