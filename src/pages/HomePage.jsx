@@ -25,7 +25,7 @@ const HomePage = () => {
             className='bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded ml-2 w-full' 
             onClick={() => {
               if(name.length!=0) localStorage.setItem('name',name); 
-              console.log(localStorage.getItem('name'));
+              // console.log(localStorage.getItem('name'));
               if(localStorage.getItem('name').length>0) 
               navigate('/create');
               else

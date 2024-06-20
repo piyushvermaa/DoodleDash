@@ -40,7 +40,7 @@ const NewRoom = () => {
     })
     .then(data => {
       if(data === nameFromStorage) setIsHost(true);
-      console.log(data);
+      // console.log(data);
     })
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
@@ -73,7 +73,7 @@ const NewRoom = () => {
           if (data.start === true) {
             
             setStatus(true);
-          }else console.log("wait");
+          }
         })
         .catch(error => {
           console.error('There was a problem with the fetch operation:', error);
@@ -112,7 +112,7 @@ const NewRoom = () => {
         return response.json();
       })
       .then(data => {
-        console.log('Exists check:', data);
+        // console.log('Exists check:', data);
         if (data.exists === false) {
           // If the player does not exist, make the second fetch request to add the player
            fetch('https://pictionary-back.onrender.com/add', {
@@ -294,7 +294,7 @@ const NewRoom = () => {
     
 
   );
-  return <><GamePage/></>
+  return <><GamePage stateArray={dataArray}/></>
 }
 
 export default NewRoom;

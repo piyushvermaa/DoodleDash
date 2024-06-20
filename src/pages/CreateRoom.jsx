@@ -10,7 +10,7 @@ const CreateRoom = () => {
   
   useEffect(() => {
     if (localStorage.getItem('name') === null) {
-      console.log(localStorage.getItem('name') + "z");
+      // console.log(localStorage.getItem('name') + "z");
       navigate('/');
     }
   }, [navigate]);
@@ -48,7 +48,7 @@ const CreateRoom = () => {
       return;
     }
     // Add logic to create a room
-    console.log(`Room Created with ID: ${roomId}`);
+    // console.log(`Room Created with ID: ${roomId}`);
     // roomId is roomId and playerName is localStorage.get('name')
     const aa = roomId;
     const bb = localStorage.getItem('name');
