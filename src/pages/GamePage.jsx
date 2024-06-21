@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { flushSync } from 'react-dom';
 
-const GamePage = () => {
+
+const GamePage = ({ stateArray }) => {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [ctx, setCtx] = useState(null);
@@ -8,17 +10,45 @@ const GamePage = () => {
   const [color, setColor] = useState('#000000');
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
+  const [first, setFirst] = useState(false);
+  
+  const [PX, setPX] = useState(null);
+  const [PY, setPY] = useState(null);
+  const [socket, setSocket] = useState(null);
+
+  // console.log(stateArray); /// it has names of everyone
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
+    
     setCtx(context);
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
     context.fillStyle = 'white';
     context.fillRect(0, 0, canvas.width, canvas.height);
-  }, []);
+    const url = window.location.href;
+    const code = url.slice(-4); 
+    const ws = new WebSocket(`wss://pictionary-back.onrender.com?code=${code}`);
+    setSocket(ws);
 
+    ws.onmessage = (event) => {
+      
+      const data = JSON.parse(event.data);
+      // console.log(event.data);
+      if(ctx)
+      handleIncomingDrawing(data);
+      else console.log(new Date().getSeconds());
+    };
+
+    
+
+    return () => {
+      ws.close();// Clear interval on component unmount
+    };
+  }, [ctx]);
+
+  
   const startDrawing = (event) => {
     event.preventDefault();
     const mouseX = getX(event);
@@ -52,13 +82,24 @@ const GamePage = () => {
 
     ctx.lineTo(mouseX, mouseY);
     ctx.stroke();
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      
+      // socket.send(JSON.stringify(drawingData));
+      const imageData = canvasRef.current.toDataURL(); // Get canvas data as base64 string
+      socket.send(JSON.stringify({ imageData }));
+    }
+    setFirst(true);
+    // PX = mouseX;
+    setPX(mouseX);
+    setPY(mouseY);
   };
 
   const stopDrawing = () => {
     if (!isDrawing) return;
-
     setIsDrawing(false);
     ctx.closePath();
+    setPX(null);
+    setPY(null);
     saveState();
   };
 
@@ -114,6 +155,22 @@ const GamePage = () => {
     link.click();
   };
 
+  const handleIncomingDrawing = (data) => {
+    
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    // console.log(context);
+    setCtx(context);
+    if(!ctx) {
+      alert("ruk");
+    }else{
+      const image = new Image();
+      image.onload = () => {
+        ctx.drawImage(image, 0, 0);
+      };
+      image.src = data.imageData;
+    }
+  }
   const saveState = () => {
     setUndoStack([...undoStack, ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height)]);
   };
@@ -155,6 +212,11 @@ const GamePage = () => {
                 <span className='text-lg font-medium text-gray-600'>60 points</span>
               </li>
               {/* Add more players here */}
+              <ul>
+        {stateArray.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
             </ul>
           </div>
         </div>
@@ -259,3 +321,4 @@ const GamePage = () => {
 }
 
 export default GamePage;
+
